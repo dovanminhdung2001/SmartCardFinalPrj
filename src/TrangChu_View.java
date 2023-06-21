@@ -1,4 +1,5 @@
 
+import model.Licence;
 import service.DateUtils;
 
 import java.awt.*;
@@ -21,6 +22,8 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.logging.Level;
@@ -445,14 +448,20 @@ public class TrangChu_View extends javax.swing.JFrame {
     }//GEN-LAST:event_menuThanhToanMouseClicked
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        // TODO add your handling code here: 
+        ArrayList<Licence> selectedAnLicences = new ArrayList<>();
         String fullName = txtFullName.getText();
         String ID = txtID.getText();
         String PIN = txtPIN.getText();  
         Icon avatar = avtLbl.getIcon();
-        Date dob = dobChoser.getDate(); 
-        System.out.println(dobChoser.getDateFormatString());
-        if (avatar == null || dob == null || fullName.isEmpty() || ID.isEmpty() || PIN.isEmpty()) {
+        Date dob = dobChoser.getDate();
+
+        for (int i = 0; i < ci.length; i++) {
+            if(ci[i].status) {
+                selectedAnLicences.add(new Licence(ci[i].label));
+            }
+        }
+
+        if (avatar == null || dob == null || fullName.isEmpty() || ID.isEmpty() || PIN.isEmpty() || selectedAnLicences.size() == 0) {
             JOptionPane.showMessageDialog(this, "Không được để trống bất kỳ trường nào.");
             return;
         } else if (!ID.matches("\\d{12}")) {
@@ -464,6 +473,7 @@ public class TrangChu_View extends javax.swing.JFrame {
         }
         String birthDay = DateUtils.sdf.format(dob); 
         String pinHash = calculateSHA256(PIN);
+
         try {
             String eID = encryptAES(ID, pinHash);
             String eFullName = encryptAES(fullName, pinHash);
