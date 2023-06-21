@@ -45,6 +45,8 @@ public class TrangChu_View extends javax.swing.JFrame {
         new CustomerItem("D", false)
     };
 
+    File selectedFile;
+    
     public class CustomerItem {
 
         public String label;
@@ -479,6 +481,35 @@ public class TrangChu_View extends javax.swing.JFrame {
             String eFullName = encryptAES(fullName, pinHash);
             String eBirthday = encryptAES(birthDay, pinHash);
             JOptionPane.showMessageDialog(this, "Mã hóa thành công");
+            
+            String formatName = selectedFile.getAbsolutePath().substring(
+                    selectedFile.getAbsolutePath().lastIndexOf(".") + 1
+            );
+            Dimension size = avtLbl.getSize();
+            int height = size.height;
+            int width = size.width;
+            BufferedImage bufferedImage = ImageIO.read(selectedFile);
+            BufferedImage bufferedImageResult = new BufferedImage(
+                    width,
+                    width,
+                    bufferedImage.getType()
+            );
+            Graphics2D g2d = bufferedImageResult.createGraphics();
+            g2d.drawImage(
+                    bufferedImage,
+                    0,
+                    0,
+                    width,
+                    width,
+                    null
+            );
+            g2d.dispose();
+            ImageIO.write(
+                    bufferedImageResult,
+                    formatName,
+                    new File("12345678.jpg")
+            );
+                    System.out.println("ok");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             ex.printStackTrace();
@@ -489,7 +520,7 @@ public class TrangChu_View extends javax.swing.JFrame {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
+            selectedFile = fileChooser.getSelectedFile();
             String name = selectedFile.getName();
             String formatName = selectedFile.getAbsolutePath().substring(
                     selectedFile.getAbsolutePath().lastIndexOf(".") + 1
@@ -510,29 +541,7 @@ public class TrangChu_View extends javax.swing.JFrame {
                     avtLbl.setSize(width, height);
 
                     System.out.println(selectedFile.length());
-                    System.out.println(selectedFile.getAbsolutePath());
-                    BufferedImage bufferedImage = ImageIO.read(selectedFile);
-                    BufferedImage bufferedImageResult = new BufferedImage(
-                            width,
-                            width,
-                            bufferedImage.getType()
-                    );
-                    Graphics2D g2d = bufferedImageResult.createGraphics();
-                    g2d.drawImage(
-                            bufferedImage,
-                            0,
-                            0,
-                            width,
-                            width,
-                            null
-                    );
-                    g2d.dispose();
-                    ImageIO.write(
-                            bufferedImageResult,
-                            formatName,
-                            new File("E:\\demo.jpg")
-                    );
-                    System.out.println("ok");
+                    System.out.println(selectedFile.getAbsolutePath()); 
                 }
                 catch (Exception e) {
                     System.out.println(e);
